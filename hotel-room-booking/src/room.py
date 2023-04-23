@@ -5,7 +5,7 @@ class RoomStatus(Enum):
     AVAILABLE = 1
     OCCUPIED = 2
     VACANT = 3
-    REPAIR = 4
+    OUT_OF_SERVICE = 4
 
 
 class Room:

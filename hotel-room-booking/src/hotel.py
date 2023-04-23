@@ -39,7 +39,7 @@ class Hotel:
         return self.available_rooms.get()
 
     def check_in(self, guest_name=None):
-        room = self.__get_nearest_available_room__()
+        room = self.__get_nearest_available_room__()[1]
         room.guest = guest_name if guest_name else "UNKNOWN_GUEST"
         print(f"Assigning room {room.room_number} to guest {room.guest}")
         room.room_status = RoomStatus.OCCUPIED
@@ -58,7 +58,7 @@ class Hotel:
     def mark_room_cleaned(self, room_number):
         room = self.rooms_map.get(room_number)
         if room.room_status == RoomStatus.VACANT:
-            print(f"Checkout room {room.room_number} from guest {room.guest}")
+            print(f"Room {room.room_number} is cleaned and made Vacant")
             room.room_status = RoomStatus.AVAILABLE
         else:
             raise Exception(f"Only Vacant rooms can be mark as cleaned, "
@@ -68,8 +68,8 @@ class Hotel:
     def mark_room_out_of_service(self, room_number):
         room = self.rooms_map.get(room_number)
         if room.room_status == RoomStatus.VACANT:
-            print(f"Checkout room {room.room_number} from guest {room.guest}")
-            room.room_status = RoomStatus.REPAIR
+            print(f"Room {room.room_number} is now out of service requesting for Repair")
+            room.room_status = RoomStatus.OUT_OF_SERVICE
         else:
             raise Exception(f"Only Vacant rooms can be mark as out of service, "
                             f"room status for room {room.room_number} is {room.room_status}")
@@ -77,8 +77,8 @@ class Hotel:
 
     def mark_room_repaired(self, room_number):
         room = self.rooms_map.get(room_number)
-        if room.room_status == RoomStatus.REPAIR:
-            print(f"Checkout room {room.room_number} from guest {room.guest}")
+        if room.room_status == RoomStatus.OUT_OF_SERVICE:
+            print(f"Room {room.room_number} is repaired so room is Vacant now")
             room.room_status = RoomStatus.VACANT
         else:
             raise Exception(f"Only Repaired rooms can be mark as repaired, "
@@ -86,11 +86,14 @@ class Hotel:
         return room
 
     def list_available_rooms(self):
-        print(self.available_rooms)
-        return self.available_rooms
+        available_rooms = []
+        print("Available rooms are: ")
+        for priority, item in self.available_rooms.queue:
+            print(item, end=", ")
+            available_rooms.append(item)
+        return available_rooms
 
     def get_room_with_status(self, status):
-        print(self.rooms_map)
-        rooms = [room for _, room in self.rooms_map.items() if room.room_status == status]
+        rooms = [room for _, room in self.rooms_map.items() if room.room_status.value == status]
         print(f"Rooms with status {status} : {rooms}")
         return rooms

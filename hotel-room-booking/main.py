@@ -15,7 +15,7 @@ class RoomTransitions(Enum):
 
 def room_transition(option, hotel_obj):
     if option == RoomTransitions.CHECK_IN.value:
-        guest = input("Enter guest Number")
+        guest = input("Enter guest Name")
         if guest:
             hotel_obj.check_in(guest)
         else:
@@ -42,15 +42,15 @@ def room_transition(option, hotel_obj):
             if opt == '0':
                 break
     else:
-        guest = input("Please enter room number")
+        room_number = input("Please enter room number")
         if option == RoomTransitions.CHECK_OUT.value:
-            hotel_obj.check_out()
+            hotel_obj.check_out(room_number)
         if option == RoomTransitions.CLEAN.value:
-            hotel_obj.mark_room_cleaned()
+            hotel_obj.mark_room_cleaned(room_number)
         if option == RoomTransitions.OUT_OF_SERVICE.value:
-            hotel_obj.mark_room_out_of_service()
+            hotel_obj.mark_room_out_of_service(room_number)
         if option == RoomTransitions.REPAIRED.value:
-            hotel_obj.mark_room_repaired()
+            hotel_obj.mark_room_repaired(room_number)
 
 
 if __name__ == '__main__':
@@ -69,7 +69,10 @@ if __name__ == '__main__':
         """)
         opt = input()
         if opt in "1234567" and len(opt) == 1:
-            room_transition(int(opt), hotel)
+            try:
+                room_transition(int(opt), hotel)
+            except Exception as E:
+                print(f"Error: {E}")
         else:
             print("Enter Valid input or enter 0 for exit")
 
